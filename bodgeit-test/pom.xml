@@ -1,0 +1,170 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>security.workshop</groupId>
+	<artifactId>bodgeit-test</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>Security testing for Bodgeit Store</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<zap.proxy.client.version>2.4-v9</zap.proxy.client.version>
+		<selenium.version>2.48.2</selenium.version>
+		<testit.webtester.version>1.0.0</testit.webtester.version>
+		<zap.target>http://localhost:8080/</zap.target>
+		<zap.targetApp>http://localhost:8080/bodgeit/</zap.targetApp>
+		<zap.addr>localhost</zap.addr>
+		<zap.port>8085</zap.port>
+		<zap.dir>C:\\Program Files\\OWASP\\Zed Attack Proxy</zap.dir>
+		<zap.session>zap.session</zap.session>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-firefox-driver</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>info.novatec.testit</groupId>
+            <artifactId>webtester-core</artifactId>
+            <version>${testit.webtester.version}</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>info.novatec.testit</groupId>
+			<artifactId>webtester-support-junit</artifactId>
+			<version>${testit.webtester.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>info.novatec.testit</groupId>
+            <artifactId>webtester-support-firefox</artifactId>
+            <version>${testit.webtester.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>info.novatec.testit</groupId>
+			<artifactId>securitytester-zap</artifactId>
+			<version>0.9.1-SNAPSHOT</version>
+            <scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<includes>
+						<include>**/FunctionalZAP.java</include>
+					</includes>
+					<systemPropertyVariables>
+						<zap.target>${zap.target}</zap.target>
+						<zap.targetApp>${zap.targetApp}</zap.targetApp>
+						<zap.addr>${zap.addr}</zap.addr>
+						<zap.port>${zap.port}</zap.port>
+						<zap.dir>${zap.dir}</zap.dir>
+						<zap.session>${zap.session}</zap.session>
+					</systemPropertyVariables>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.zaproxy</groupId>
+				<artifactId>zap-maven-plugin</artifactId>
+				<version>2.8.0-SNAPSHOT</version>
+				<configuration>
+					<zapProgram>/Program Files (x86)/OWASP/Zed Attack Proxy/zap.bat</zapProgram>
+					<zapProxyHost>localhost</zapProxyHost>
+					<zapProxyPort>8090</zapProxyPort>
+					<targetUrl>http://localhost:8080/bodgeit</targetUrl>
+					<saveSession>false</saveSession>
+					<apiKey>afa</apiKey>
+					<spider>false</spider>
+					<ignoredAlerts>
+						<ignoredAlert>X-Content-Type-Options header missing</ignoredAlert>
+						<ignoredAlert>X-Frame-Options header not set</ignoredAlert>
+						<ignoredAlert>Cookie set without HttpOnly flag</ignoredAlert>
+						<ignoredAlert>X-Content-Type-Options header missing</ignoredAlert>
+						<ignoredAlert>Web Browser XSS Protection Not Enabled</ignoredAlert>
+						<ignoredAlert>Absence of Anti-CSRF Tokens</ignoredAlert>
+					</ignoredAlerts>
+					<failOnAlerts>true</failOnAlerts>
+					<shutdownZAP>false</shutdownZAP>
+				</configuration>
+				<executions>
+					<!-- <execution> -->
+					<!-- <id>launch</id> -->
+					<!-- <phase>pre-integration-test</phase> -->
+					<!-- <goals> -->
+					<!-- <goal>launch</goal> -->
+					<!-- </goals> -->
+					<!-- </execution> -->
+					<execution>
+						<id>scan</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>scan</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>novatec</id>
+			<name>NovaTec Public Repository</name>
+			<url>http://repository.novatec-gmbh.de/content/repositories/novatec/</url>
+		</repository>
+	</repositories>
+</project>
