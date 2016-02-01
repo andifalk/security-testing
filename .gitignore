@@ -1,0 +1,9 @@
+.idea/
+*.iml
+*.project
+*.classpath
+bodgeit/.settings/
+bodgeit-test/target/
+bodgeit/target/
+bodgeit-test/testartifacts/
+target/
