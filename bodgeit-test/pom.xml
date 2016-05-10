@@ -9,7 +9,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<zap.proxy.client.version>2.4-v9</zap.proxy.client.version>
-		<selenium.version>2.48.2</selenium.version>
+		<selenium.version>2.53.0</selenium.version>
 		<testit.webtester.version>1.0.0</testit.webtester.version>
 		<zap.target>http://localhost:8080/</zap.target>
 		<zap.targetApp>http://localhost:8080/bodgeit/</zap.targetApp>
